@@ -14,6 +14,7 @@
 int Rectangle::GetHeight() {return height;}
 int Rectangle::GetWidth() {return width;}
 
+
 bool Rectangle::operator==(const Rectangle &s)
 {
     if (this == &s) {
@@ -25,8 +26,26 @@ bool Rectangle::operator==(const Rectangle &s)
     }
 }
 
+ostream& operator << (ostream& os, Rectangle &r)
+{
+    os << "Position is: " <<
+}
+
 Rectangle::Rectangle(int x, int y, int h, int w)
 {
     xLow = x; yLow = y;
     height = h; width = w;
+}
+
+Polynomial Polynomial::Add(Polynomial b)
+{// *this와 b를 더한 결과를 반환한다.
+    Polynomial c;
+    int aPos = 0, bPos = 0;
+    while ((aPos < terms) && (bPos < b.terms)) {
+        if (termArray[aPos].exp == b.termArray[bPos].exp) {
+            double t = termArray[aPos].coef + b.termArray[bPos].coef;
+            if (t) c.NewTerm(
+        }
+    }
+    
 }
