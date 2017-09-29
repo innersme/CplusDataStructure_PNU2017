@@ -20,4 +20,14 @@ private:
     int xLow, yLow, height, width;
     //(xLow, yLow)는 사각형의 왼쪽 하단 모서리 좌표이다.
 };
+
+class MyRectangle{
+public:
+    int Set
+private:
+    char color[10];
+    
+    
+};
+
 #endif /* Rectangle_hpp */
