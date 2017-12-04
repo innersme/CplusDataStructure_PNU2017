@@ -11,131 +11,146 @@
 #include <string>
 #include <cstdlib>
 
-#define bracketO {||[||( ;
-
 using namespace std;
 
 class Node{
     friend class Stack;
 private:
-    char  data;
+    char    data;
     Node    *Next;
-    Node(int data);
+    Node(char data);
 };
 
-Node::Node(int data){
+Node::Node(char data){
     this->data = data;
+    this->Next = NULL;
 }
 
 class Stack{
 private:
     Node *top;
-    int length;
 public:
     Stack();
-    ~Stack();
+    //~Stack();
+    bool isEmpty();
     void Push(char data);
     char pop();
     char show();
-    int getLength();
 };
 
 Stack::Stack()
 {
     this->top = NULL;
-    this->length = 0;
 }
 
-Stack::~Stack(){
+/*Stack::~Stack(){
     Node * top = this->top;
     while(top){
         Node *newNode = top;
         top = top->Next;
         delete newNode;
     }
+}*/
+
+bool Stack::isEmpty()
+{
+    if (this->top == NULL) {
+        return 1;
+    }
+    else return 0;
 }
 
 void Stack::Push(char data)
 {
+    Node *newNode = new Node(data);
     if (this->top == NULL) {
-        this->top = new Node(data);
+        this->top = newNode;
     }
     else{
-        Node *newNode = this->top;
-        this->top = new Node(data);
-        this->top->Next = newNode;
+        newNode->Next = this->top;
+        this->top = newNode;
+        
     }
-    length++;
-    
 };
 
 char Stack::pop()
 {
-    char data = this->top->data;
-    delete this->top;
-    this->top = this->top->Next;
-    
-    length--;
-    
-    return data;
+    char data;
+    Node *tmpNode;
+    if (this->isEmpty()) {
+        return 0;
+    }
+    else{
+        data = this->top->data;
+        tmpNode = this->top;
+        this->top = this->top->Next;
+        delete tmpNode;
+        //delete this->top;
+        return data;
+    }
 };
 
 char Stack::show()
 {
-    return this->top->data;
-}
-
-int Stack::getLength(){
-    return length;
+    if (this->top == NULL) {
+        return 0;
+    }
+    else
+    {
+        return this->top->data;
+    }
+    
 }
 
 bool isTrue(string str)
 {
-    bool flag =0; int i =0;
-    int strNum = str.length();
+    bool flag =0;
+    int i =1;
     Stack stack;
-    
-    while (i < strNum) {
-        if (str[i] == ']') {
-            if(stack.show() == '[')
+    stack.Push(str[0]);
+    if (str.length() == 1) {
+        return flag;
+    }
+    while (i < str.length()) {
+        char tmp = str[i];
+        //str.erase(0,1);
+        if (tmp == ']') {
+            if(stack.pop() == '[')
             {
-                stack.pop();i++;
+                i++;
             }
             else return flag;}
-        else if (str[i] == ')') {
-            if(stack.show() == '(')
+        else if (tmp == ')' ) {
+            if(stack.pop() == '(')
             {
-                stack.pop();i++;
+                i++;
             }
             else return flag;}
-        else if (str[i] == '}') {
-            if(stack.show() == '{')
+        else if (tmp == '}') {
+            if(stack.pop() == '{')
             {
-                stack.pop();i++;
+                i++;
             }
             else return flag;}
         else
         {
-            stack.Push(str[i]);
+            stack.Push(tmp);
             i++;
         }
     }
-    if (i == strNum && stack.getLength() == 0) {
-        flag = 1;
+    if (stack.isEmpty() == 0) {
+        return flag;
     }
-    
+    flag = 1;
     return flag;
 }
 
-
 int main()
 {
-    ifstream fin("/Users/innersme/C_study/CplusDataStructure/CplusDataStructure/sampleData2/2.inp");
+    ifstream fin("bracket.inp");
     
-    int N;
     int i = 0;
     string str[10000];
-    bool *boolist = new bool[N];
     
     if (fin.is_open()) {
         while (!fin.eof()) {
@@ -144,14 +159,28 @@ int main()
         }
     }
     
-    N = atoi(str[0].c_str());
+    int N = atoi(str[0].c_str());
+    i = 1;
+    ofstream fout("bracket.out");
+    fout << N << endl;
+    while(1)
+    {
+        if (i == N+1 ) {
+            break;
+        }
+        else
+        {
+            if (isTrue(str[i])) {
+                fout << "true" << endl;
+            }
+            else
+            {
+                fout << "false" <<  endl;
+            }
+            i++;
+        }
+    }
     
-    
-    cout << isTrue(str[3]);
-    
-    
-    
-    delete []boolist;
     return 0;
     
 }
