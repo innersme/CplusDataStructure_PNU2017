@@ -70,7 +70,7 @@ int main()
     int *idxofArr = new int[M];
     int *NofArr = new int[M];
     
-    Matrix **MatArr = NULL;
+    Matrix *MatArr = NULL;
     
     int j = 0;
     while (j < M) {
@@ -78,7 +78,7 @@ int main()
         for (int k = 0 ; k < NofArr[j]; k++) {
             int tprow, tpcol, tpval;
             fin >> tprow >> tpcol >> tpval;
-            MatArr[j]->MInput(tprow, tpcol, tpval);
+            MatArr[j].MInput(tprow, tpcol, tpval);
         }
         j++;
     }
