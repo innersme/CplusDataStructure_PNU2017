@@ -11,51 +11,81 @@
 #include <string>
 using namespace std;
 
+
+/* node */
 class Node
 {
     int data;
     Node *Next;
+
 public:
     friend class List;
+    friend class Stack;
     Node(int _data);
 };
 
+Node::Node(int _data)
+{
+    data = _data;
+    Next = NULL;
+}
+
+/* list */
 class List
 {
     // order;
     Node *top;
     Node *p;
     Node *q;
+    Node *cur;
     // indegree
     int inde;
+    bool isVisited;
 public:
     List();
     /* data 입력 */
     void Inp(int _data);
-    /* data 제거 */
-    void Del(int _data);
     // inde에 접근
-    void indeplus(){inde++;}
-    void indeminus(){inde--;}
-    int getinde(){return inde;}
-    void Print();
+    int Next(int data);
+    friend class Graph;
+    friend class Stack;
 };
 
-class Queue
-{
-    Node *p;
-    Node *q;
+/* stack */
+class Stack{
+private:
+    Node *top;
 public:
-    
+    Stack();
+    //~Stack();
+    bool isEmpty();
+    void Push(int data);
+    int pop();
+    int show();
 };
-Node::Node(int _data)
+
+class Graph
 {
-    data = _data;
-    Next = NULL;
-}
+    int V;
+    int E;
+    List *listarr;
+    int *visit;
+    
+public:
+    Graph(int V);
+    void addEdge(int v, int w);
+    void showV(int v);
+    bool dovisit(int v);
+    void printall();
+    void indep(int v){listarr[v].inde++;}
+    void indem(int v){listarr[v].inde--;}
+    int getinde(int v){return listarr[v].inde;}
+};
+
+
 List::List()
 {
-    p = top = NULL;
+    cur = p = q = top = NULL;
     inde = 0;
 }
 
@@ -63,7 +93,7 @@ void List::Inp(int _data)
 {
     Node *tmp = new Node(_data);
     if (top == NULL) {
-        q = p = top = tmp;
+        cur = q = p = top = tmp;
     }
     else
     {
@@ -72,67 +102,116 @@ void List::Inp(int _data)
         p = p->Next;
     }
 }
-/*
-void List::Del(int _data)
+int List::Next(int _data)
 {
-    if (top->data == _data) {
-        <#statements#>
+    int tmpdata = -1;
+    if (top == NULL) {
+        return -1;
     }
     else
     {
-        
-    }
-}*/
-
-void List::Print()
-{
-    Node *ntmp = top;
-    if (ntmp == NULL) {
-        cout << "/" <<endl;
-    }
-    else
-    {
-        /* +1 되어 나타남 */
-        cout << ntmp->data + 1 << endl;
-        ntmp = ntmp->Next;
-        Print();
+        Node *tmp = top;
+        while (tmpdata == _data) {
+            tmp->data = tmpdata;
+            tmp = tmp->Next;
+        }
+        return tmp->Next->data;
     }
 }
+Stack::Stack()
+{
+    this->top = NULL;
+}
+
+bool Stack::isEmpty()
+{
+    if (this->top == NULL) {
+        return 1;
+    }
+    else return 0;
+}
+
+void Stack::Push(int data)
+{
+    Node *newNode = new Node(data);
+    if (this->top == NULL) {
+        this->top = newNode;
+    }
+    else{
+        newNode->Next = this->top;
+        this->top = newNode;
+    }
+};
+
+int Stack::pop()
+{
+    int data;
+    Node *tmpNode;
+    if (this->isEmpty()) {
+        return 0;
+    }
+    else{
+        data = this->top->data;
+        tmpNode = this->top;
+        this->top = this->top->Next;
+        delete tmpNode;
+        //delete this->top;
+        return data;
+    }
+};
+
+Graph::Graph(int V)
+{
+    this->V = V;
+    this->E = 0;
+    listarr = new List[V];
+    visit = new int[V];
+    for (int i = 0 ; i < V; i++) {
+        visit[i] = 0;
+    }
+}
+
+void Graph::addEdge(int _v, int _w)
+{
+    listarr[_v].Inp(_w);
+    E++;
+}
+
+bool Graph::dovisit(int _v)
+{
+    if (this->visit[_v] == 0) {
+        this->visit[_v] = 1;
+        cout << _v << endl;
+        return 1;
+    }
+    return 0;
+}
+
+void Graph::printall()
+{
+    cout << " << GRAPH >> " << endl;
+    for (i = 0; <#condition#>; <#increment#>) {
+        <#statements#>
+    }
+    cout << "Node" << this-
+}
+
 int main()
 {
     ifstream fin("/Users/innersme/C_study/CplusDataStructure_PNU2017/sampleData4/1.inp");
     
     int N, K;
     fin >> N;
-    List *listarr = new List[N];
+    Graph G(N);
     fin >> K;
     int i = 0;
     /* st, de */
     int st = 0; int de = 0;
     while (i < K) {
         fin >> st >> de;
-        listarr[st-1].Inp(de-1);
-        listarr[de-1].indeplus();
+        G.addEdge(st-1, de-1);
         i++;
     }
     
-    // 입력된 LinkedList 출력
-    for (int i = 0 ; i < N ; i ++) {
-        cout << "<< linked list " << i+1 << " >>"<< endl;
-        listarr[i].Print();
-        cout << "inde: "  ;
-        int a = listarr[i].getinde();
-        cout << a << endl;
-    }
-    listarr[0].Print();
-    
-    i = 0;
-    while (listarr[i].getinde() != 0 ) {
-        i++;
-    }
-    
-    
-    
-    delete []listarr;
     return 0;
 }
